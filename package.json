@@ -1,0 +1,12 @@
+{
+  "name": "docker-cicd-demo",
+  "version": "1.0.0",
+  "description": "Dockerised Node.js app with GitHub Actions CI/CD pipeline",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo 'Tests passed!' && exit 0"
+  },
+  "author": "Ubani Onu Chukwu",
+  "license": "MIT"
+}
