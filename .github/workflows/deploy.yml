@@ -1,0 +1,49 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
+  docker-build:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    needs: build-and-test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build Docker image
+        run: docker build -t docker-cicd-demo:latest .
+
+      - name: Verify Docker image
+        run: docker images | grep docker-cicd-demo
+
+      - name: Test Docker container runs
+        run: |
+          docker run -d -p 3000:3000 --name test-container docker-cicd-demo:latest
+          sleep 3
+          curl -f http://localhost:3000 && echo "✅ Container is healthy!"
+          docker stop test-container
